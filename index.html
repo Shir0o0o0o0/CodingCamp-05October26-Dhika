@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Life Task Dashboard - Dashboard produktivitas pribadi" />
+  <title>Life Task Dashboard</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body class="theme-light">
+
+  <!-- ===== HEADER ===== -->
+  <header class="app-header">
+    <div class="header-left">
+      <span class="app-logo" aria-hidden="true">⚡</span>
+      <span class="app-title">Life Task Dashboard</span>
+    </div>
+    <div class="header-right">
+      <!-- Theme Toggle -->
+      <button id="btn-theme-toggle" class="btn-icon" aria-label="Ganti tema" title="Ganti Tema">
+        <span id="theme-icon">🌙</span>
+      </button>
+      <!-- Edit Username -->
+      <button id="btn-edit-name" class="btn-icon" aria-label="Atur nama pengguna" title="Atur Nama">
+        <span>✏️</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ===== MAIN CONTENT ===== -->
+  <main class="app-main">
+
+    <!-- ===== GREETING & CLOCK SECTION ===== -->
+    <section class="section-greeting card" aria-label="Salam dan jam">
+      <div class="greeting-text">
+        <h1 id="greeting-message" class="greeting-heading">Selamat datang!</h1>
+        <p id="greeting-date" class="greeting-date"></p>
+      </div>
+      <div class="clock-display" aria-live="polite" aria-atomic="true">
+        <span id="clock-time" class="clock-time">00:00:00</span>
+      </div>
+    </section>
+
+    <!-- ===== USERNAME MODAL ===== -->
+    <div id="modal-username" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="modal-title-name">
+      <div class="modal-box">
+        <h2 id="modal-title-name" class="modal-title">Atur Nama Kamu</h2>
+        <p class="modal-desc">Nama ini akan ditampilkan pada salam di dashboard.</p>
+        <input
+          id="input-username"
+          class="modal-input"
+          type="text"
+          placeholder="Masukkan namamu..."
+          maxlength="30"
+          autocomplete="off"
+          aria-label="Nama pengguna"
+        />
+        <div id="username-error" class="input-error hidden" role="alert"></div>
+        <div class="modal-actions">
+          <button id="btn-save-name" class="btn btn-primary">Simpan</button>
+          <button id="btn-cancel-name" class="btn btn-secondary">Batal</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== DASHBOARD GRID ===== -->
+    <div class="dashboard-grid">
+
+      <!-- ===== FOCUS TIMER SECTION ===== -->
+      <section class="section-timer card" aria-label="Timer fokus Pomodoro">
+        <div class="section-header">
+          <h2 class="section-title">
+            <span aria-hidden="true">🍅</span> Timer Fokus
+          </h2>
+          <span id="timer-status-badge" class="badge badge-idle">Siap</span>
+        </div>
+
+        <!-- Timer Ring -->
+        <div class="timer-ring-wrapper" role="timer" aria-label="Sisa waktu fokus">
+          <svg class="timer-ring" viewBox="0 0 120 120" aria-hidden="true">
+            <circle class="ring-bg" cx="60" cy="60" r="52" />
+            <circle id="ring-progress" class="ring-progress" cx="60" cy="60" r="52" />
+          </svg>
+          <div class="timer-center">
+            <span id="timer-display" class="timer-time">25:00</span>
+            <span id="timer-label" class="timer-sublabel">Fokus</span>
+          </div>
+        </div>
+
+        <!-- Timer Controls -->
+        <div class="timer-controls">
+          <button id="btn-timer-start" class="btn btn-primary btn-timer" aria-label="Mulai timer">
+            ▶ Mulai
+          </button>
+          <button id="btn-timer-pause" class="btn btn-secondary btn-timer" aria-label="Jeda timer" disabled>
+            ⏸ Jeda
+          </button>
+          <button id="btn-timer-reset" class="btn btn-ghost btn-timer" aria-label="Reset timer">
+            ↺ Reset
+          </button>
+        </div>
+
+        <!-- Duration Presets -->
+        <div class="timer-presets" role="group" aria-label="Pilih durasi">
+          <button class="preset-btn active" data-minutes="25">25m</button>
+          <button class="preset-btn" data-minutes="15">15m</button>
+          <button class="preset-btn" data-minutes="50">50m</button>
+          <button class="preset-btn" data-minutes="5">5m Istirahat</button>
+        </div>
+      </section>
+
+      <!-- ===== TASK MANAGEMENT SECTION ===== -->
+      <section class="section-tasks card" aria-label="Daftar tugas">
+        <div class="section-header">
+          <h2 class="section-title">
+            <span aria-hidden="true">✅</span> Tugas Hari Ini
+          </h2>
+          <span id="task-counter" class="badge badge-count">0 tugas</span>
+        </div>
+
+        <!-- Add Task Form -->
+        <form id="form-add-task" class="task-form" novalidate aria-label="Tambah tugas baru">
+          <div class="task-input-group">
+            <input
+              id="input-task"
+              class="task-input"
+              type="text"
+              placeholder="Tambah tugas baru..."
+              maxlength="100"
+              autocomplete="off"
+              aria-label="Judul tugas baru"
+            />
+            <button type="submit" class="btn btn-primary btn-add" aria-label="Tambah tugas">
+              +
+            </button>
+          </div>
+          <div id="task-error" class="input-error hidden" role="alert"></div>
+        </form>
+
+        <!-- Task List -->
+        <ul id="task-list" class="task-list" aria-label="Daftar tugas" aria-live="polite">
+          <!-- Tasks rendered here by JS -->
+        </ul>
+
+        <!-- Empty State -->
+        <div id="task-empty" class="empty-state hidden" aria-live="polite">
+          <span class="empty-icon" aria-hidden="true">📋</span>
+          <p>Belum ada tugas.</p>
+          <p class="empty-hint">Tambahkan tugas pertamamu di atas!</p>
+        </div>
+
+        <!-- Edit Task Modal (inline) -->
+        <div id="modal-edit-task" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="modal-title-task">
+          <div class="modal-box">
+            <h2 id="modal-title-task" class="modal-title">Edit Tugas</h2>
+            <input
+              id="input-edit-task"
+              class="modal-input"
+              type="text"
+              placeholder="Judul tugas..."
+              maxlength="100"
+              autocomplete="off"
+              aria-label="Edit judul tugas"
+            />
+            <div id="edit-task-error" class="input-error hidden" role="alert"></div>
+            <div class="modal-actions">
+              <button id="btn-save-edit-task" class="btn btn-primary">Simpan</button>
+              <button id="btn-cancel-edit-task" class="btn btn-secondary">Batal</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== QUICK LINKS SECTION ===== -->
+      <section class="section-links card" aria-label="Tautan cepat">
+        <div class="section-header">
+          <h2 class="section-title">
+            <span aria-hidden="true">🔗</span> Tautan Cepat
+          </h2>
+          <button id="btn-add-link" class="btn btn-ghost btn-sm" aria-label="Tambah tautan baru">
+            + Tambah
+          </button>
+        </div>
+
+        <!-- Add Link Form -->
+        <div id="form-add-link" class="link-form hidden" aria-label="Form tambah tautan">
+          <input
+            id="input-link-name"
+            class="task-input"
+            type="text"
+            placeholder="Nama tautan..."
+            maxlength="30"
+            autocomplete="off"
+            aria-label="Nama tautan"
+          />
+          <input
+            id="input-link-url"
+            class="task-input"
+            type="url"
+            placeholder="https://..."
+            autocomplete="off"
+            aria-label="URL tautan"
+          />
+          <div id="link-error" class="input-error hidden" role="alert"></div>
+          <div class="link-form-actions">
+            <button id="btn-save-link" class="btn btn-primary btn-sm">Simpan</button>
+            <button id="btn-cancel-link" class="btn btn-secondary btn-sm">Batal</button>
+          </div>
+        </div>
+
+        <!-- Links Grid -->
+        <div id="links-grid" class="links-grid" aria-label="Daftar tautan cepat" aria-live="polite">
+          <!-- Links rendered here by JS -->
+        </div>
+
+        <!-- Empty State -->
+        <div id="links-empty" class="empty-state hidden" aria-live="polite">
+          <span class="empty-icon" aria-hidden="true">🌐</span>
+          <p>Belum ada tautan cepat.</p>
+          <p class="empty-hint">Tambahkan tautan favoritmu!</p>
+        </div>
+      </section>
+
+    </div><!-- end .dashboard-grid -->
+  </main>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="app-footer">
+    <p>Life Task Dashboard &copy; 2026 &mdash; Dibuat dengan ❤️ menggunakan HTML, CSS &amp; JavaScript</p>
+  </footer>
+
+  <!-- ===== TOAST NOTIFICATION ===== -->
+  <div id="toast-container" class="toast-container" aria-live="assertive" aria-atomic="true"></div>
+
+  <script src="js/script.js"></script>
+</body>
+</html>
